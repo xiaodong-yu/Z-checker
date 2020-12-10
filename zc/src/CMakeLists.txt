@@ -1,9 +1,9 @@
 set (zc_sources
   DynamicByteArray.c       ZC_CompareData.c         ZC_DataProperty_float.c  ZC_ReportGenerator.c     ZC_rw.c
-  DynamicDoubleArray.c     ZC_CompareData_double.cpp  ZC_DataSetHandler.c      ZC_conf.c                ZC_util.c
-  DynamicFloatArray.c      ZC_CompareData_float.cpp   ZC_gnuplot.c             dictionary.c	      ZC_ssim.c
+  DynamicDoubleArray.c     ZC_CompareData_double.c  ZC_DataSetHandler.c      ZC_conf.c                ZC_util.c
+  DynamicFloatArray.c      ZC_CompareData_float.c   ZC_gnuplot.c             dictionary.c
   DynamicIntArray.c        ZC_DataProperty.c        ZC_Hashtable.c           ZC_latex.c               iniparser.c
-  ZC_ByteToolkit.c         ZC_DataProperty_double.c ZC_quicksort.c           zc.c	zc_derivativeMetrics.cpp	
+  ZC_ByteToolkit.c         ZC_DataProperty_double.c ZC_quicksort.c           zc.c
 )
 
 # TBA: ZC_R_math.c // R
@@ -22,6 +22,6 @@ if (Boost_FOUND)
 endif ()
 
 add_library (zc SHARED ${zc_sources})
-target_link_libraries (zc ${zc_dependencies} ${CMAKE_THREAD_LIBS_INIT} m)
+target_link_libraries (zc ${zc_dependencies} m)
 
 install (TARGETS zc LIBRARY DESTINATION lib)

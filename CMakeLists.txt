@@ -3,16 +3,12 @@ project (zchecker)
 
 set (CMAKE_DISABLE_SOURCE_CHANGES ON)
 set (CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/zc/include)
-
-find_package (Threads REQUIRED)
-set (CMAKE_THREAD_PREFER_PTHREAD)
 
 find_package (MPI)
 if (MPI_FOUND)
@@ -56,12 +52,6 @@ else ()
     include_directories (${LevelDB_INCLUDE_DIR})
     add_definitions (-DHAVE_LEVELDB)
   endif ()
-endif ()
-
-find_package (PNG)
-if (PNG_FOUND)
-  include_directories (${PNG_INCLUDE_DIRS})
-  add_definitions (-DHAVE_PNG)
 endif ()
 
 find_package (Threads REQUIRED)
