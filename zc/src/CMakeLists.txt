@@ -1,9 +1,10 @@
 set (zc_sources
-  DynamicByteArray.c       ZC_CompareData.c         ZC_DataProperty_float.c  ZC_ReportGenerator.c     ZC_rw.c
-  DynamicDoubleArray.c     ZC_CompareData_double.c  ZC_DataSetHandler.c      ZC_conf.c                ZC_util.c
-  DynamicFloatArray.c      ZC_CompareData_float.c   ZC_gnuplot.c             dictionary.c
-  DynamicIntArray.c        ZC_DataProperty.c        ZC_Hashtable.c           ZC_latex.c               iniparser.c
-  ZC_ByteToolkit.c         ZC_DataProperty_double.c ZC_quicksort.c           zc.c
+  DynamicByteArray.c       ZC_CompareData.c           ZC_DataProperty_float.c  ZC_ReportGenerator.c     ZC_rw.c
+  DynamicDoubleArray.c     ZC_CompareData_double.cpp  ZC_DataSetHandler.c      ZC_conf.c                ZC_util.c
+  DynamicFloatArray.c      ZC_CompareData_float.cpp   ZC_gnuplot.c             dictionary.c
+  DynamicIntArray.c        ZC_DataProperty.c          ZC_Hashtable.c           ZC_latex.c               iniparser.c
+  ZC_ByteToolkit.c         ZC_DataProperty_double.c   ZC_quicksort.c           zc.c
+  zc_derivativeMetrics.cpp ZC_ssim.c                  cuZC_ssim.cu
 )
 
 # TBA: ZC_R_math.c // R
@@ -22,6 +23,11 @@ if (Boost_FOUND)
 endif ()
 
 add_library (zc SHARED ${zc_sources})
-target_link_libraries (zc ${zc_dependencies} m)
+#target_compile_features (zc PUBLIC cxx_std_11)
+set_property(TARGET zc PROPERTY CUDA_ARCHITECTURES 70 75)
+set_target_properties (zc
+                    PROPERTIES
+                    CUDA_SEPARABLE_COMPILATION ON)
+#target_link_libraries (zc ${zc_dependencies} m)
 
 install (TARGETS zc LIBRARY DESTINATION lib)
