@@ -1,4 +1,7 @@
 #include "cuZC_entry.h"
+#include "timingGPU.h"
+
+TimingGPU timer_GPU;
  
 double cu_SSIM_3d_windowed(int windowSize0, int windowSize1, int windowSize2, int windowShift0, int windowShift1, int windowShift2)
 {
@@ -58,12 +61,13 @@ int cu_SSIM(float *data1, float *data2, size_t r3, size_t r2, size_t r1, int ssi
     cudaMemcpy(ddata2,   data2,   csize, cudaMemcpyHostToDevice); 
     cudaMemcpy(dresults, results, isize, cudaMemcpyHostToDevice); 
 
-
+    timer_GPU.StartCounter();
     dim3 dimBlock(64, 1);
     dim3 dimGrid(blksize, 1);
     ssim<<<dimGrid, dimBlock>>>(ddata1, ddata2, dresults, r3, r2, r1, ssimSize, ssimShift);
     cudaMemcpy(results, dresults, isize, cudaMemcpyDeviceToHost); 
     double x=0;
+    printf("GPU timing: %f", timer_GPU.GetCounter());
     for (int i=0; i<blksize; i++){
         x += results[i];
         printf("results%i=%e\n",i,x);

@@ -178,6 +178,7 @@ __global__ void ssim(float *data1, float *data2, double *results, int r3, int r2
             result += ssim_winComp(xMin, xMax, yMin, yMax, xSum, x2Sum, ySum, y2Sum, xySum, np);
             //results[x++] = ssim_winComp(xMin, xMax, yMin, yMax, xSum, x2Sum, ySum, y2Sum, xySum, np);
             //results[tid] = blockReduceSum(val);
+            __syncthreads();                  
 
         }
     }
