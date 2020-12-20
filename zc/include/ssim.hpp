@@ -1,6 +1,8 @@
 #ifndef SSIM_HPP
 #define SSIM_HPP
 
+#include "cuZC_entry.h"
+
 
 template <typename dT>
 double matrix<dT>::SSIM_4d_windowed(matrix &other, int windowSize0, int windowSize1, int windowSize2, int windowSize3, int windowShift0, int windowShift1, int windowShift2, int windowShift3){
@@ -105,10 +107,13 @@ double matrix<dT>::SSIM_4d_calcWindow(matrix &other, int offset0, int offset1, i
 
 template <typename dT>
 double matrix<dT>::SSIM_3d_windowed(matrix &other, int windowSize0, int windowSize1, int windowSize2, int windowShift0, int windowShift1, int windowShift2){
+  
+  //cu_SSIM_3d_windowed(windowSize0, windowSize1, windowSize2, windowShift0, windowShift1, windowShift2);
   int offset0,offset1,offset2;
   int nw=0; //Number of windows
   double ssimSum=0;
   int offsetInc0,offsetInc1,offsetInc2;
+
   
   if(windowSize0>size0){cout<<"ERROR: windowSize0 = "<<windowSize0<<" > "<<size0<<" = matrix::size0"<<endl;assert(0);}
   if(windowSize1>size1){cout<<"ERROR: windowSize1 = "<<windowSize1<<" > "<<size1<<" = matrix::size1"<<endl;assert(0);}
@@ -120,19 +125,26 @@ double matrix<dT>::SSIM_3d_windowed(matrix &other, int windowSize0, int windowSi
   offsetInc0=windowShift0;
   offsetInc1=windowShift1;
   offsetInc2=windowShift2;
+  cout << "test:" <<size0<<":"<<size1<<":"<<size2<<endl;
   
-  for(offset2=0; offset2+windowSize2<=size2; offset2+=offsetInc2){ //MOVING WINDOW
-      
+  for(offset0=0; offset0+windowSize0<=size0; offset0+=offsetInc0){ //MOVING WINDOW
+    double sum = 0; 
     for(offset1=0; offset1+windowSize1<=size1; offset1+=offsetInc1){ //MOVING WINDOW
       
-      for(offset0=0; offset0+windowSize0<=size0; offset0+=offsetInc0){ //MOVING WINDOW
+      for(offset2=0; offset2+windowSize2<=size2; offset2+=offsetInc2){ //MOVING WINDOW
+      //offset1=331; offset2=36;
         nw++;
         ssimSum+=SSIM_3d_calcWindow(other, offset0, offset1, offset2, windowSize0, windowSize1, windowSize2);
+        //sum=SSIM_3d_calcWindow(other, offset0, offset1, offset2, windowSize0, windowSize1, windowSize2);
+        //printf("sum%i,%i=%e,%e\n", offset1, offset2, sum, ssimSum);
+        //exit(0); 
         
       }
     }
+    //exit(0); 
   }
-  
+  printf("Sum%i=%e\n", offset0, ssimSum);
+  exit(0); 
   //cout<<"# of windows = "<<nw<<endl;
   return ssimSum/nw;
   return 0;
@@ -152,11 +164,21 @@ double matrix<dT>::SSIM_3d_calcWindow(matrix &other, int offset0, int offset1, i
   double y2Sum=0;
   double xySum=0;
 
+  //for (int i=other.size0*other.size1*6+other.size1*6;i<other.size0*other.size1*6+other.size1*6+7;i++){
+////for (int i=0;i<r1*r2*r3;i++){
+  //  printf("bdata%i=%f, %f\n",i, data[i], other.data[i]);
+
+  //}
+  //exit(0);
+
   for(i2=offset2;i2<offset2+windowSize2;i2++){
     for(i1=offset1;i1<offset1+windowSize1;i1++){
       for(i0=offset0;i0<offset0+windowSize0;i0++){
         np++;
         index=i0+size0*(i1+size1*i2);
+        //cout << "data:" << size0 << ":" << size2 << ":" << i0 << ":" << i1 << ":" << i2  << endl;
+        //printf("bdata%i=%e, %e\n",index, data[index], other.data[index]);
+        //cout << "data:" << index << ":" << data[index] << ":" << other.data[index] << endl;
         if(xMin>data[index])
           xMin=data[index];
         if(xMax<data[index])
@@ -170,10 +192,10 @@ double matrix<dT>::SSIM_3d_calcWindow(matrix &other, int offset0, int offset1, i
         ySum+=other.data[index];
         y2Sum+=(other.data[index]*other.data[index]);
         xySum+=(data[index]*other.data[index]);
+        //cout << "data:" << data[index] << ":" << i0 << ":" << i1 << ":" << i2  << endl;
       }
     }
   }
-
 
   double xMean=xSum/np;
   double yMean=ySum/np;
@@ -196,11 +218,12 @@ double matrix<dT>::SSIM_3d_calcWindow(matrix &other, int offset0, int offset1, i
   double contrast=(2*xSigma*ySigma+c2)/(xSigma*xSigma+ySigma*ySigma+c2);
   double structure=(xyCov+c3)/(xSigma*ySigma+c3);
   double ssim=luminance*contrast*structure;
+  //cout << "data:" << xySum/np << ":" << xMean*yMean << endl;
 
   //double ssim=luminance*luminance*luminance*luminance;
   //ssim=ssim*contrast*contrast*contrast*contrast;
   //ssim=ssim*structure*structure*structure*structure;
-  //cout<<"xMean : yMean : xSigma : ySigma : xyCov = "<<xMean<<" : "<<yMean<<" : "<<xSigma<<" : "<<ySigma<<" : "<<xyCov<<endl;
+  //cout<<"xMean : yMean : xSigma : ySigma : xyCov : ssim = "<<xMean<<" : "<<yMean<<" : "<<xSigma<<" : "<<ySigma<<" : "<<xyCov<<" : "<<ssim<<endl;
   //cout<<"l : c : s = "<<luminance<<" : "<<contrast<<" : "<<structure<<endl; //AMG
   
   //if(isnan(ssim)) assert(0);

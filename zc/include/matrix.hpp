@@ -5,6 +5,7 @@
 #include <fstream>
 #include <assert.h>
 #include <math.h>
+#include "cuZC_entry.h"
 
 #define DEBUG_L0 1
 #define DEBUG_CHECK_BOUNDARIES 1

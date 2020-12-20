@@ -2,6 +2,7 @@
 #include <cmath>
 #include <matrix.hpp>
 #include "zc.h"
+#include "cuZC_entry.h"
 
 int ssimSize=7;
 int ssimShift=1;
@@ -57,6 +58,12 @@ double zc_calc_metric_der_order1_ssim_float(float *data1, float *data2,
   lossy.derOr_1_norm_2(temp2);
   
   double result;
+  for (int i=temp1.size0*temp1.size1*6+temp1.size1*6;i<temp1.size0*temp1.size1*6+temp1.size1*6+7;i++){
+//for (int i=0;i<r1*r2*r3;i++){
+    printf("hdata1=%e, %e\n", temp1.data[i], temp2.data[i]);
+    printf("hdata2=%e, %e\n", data1[i], data2[i]);
+
+  }
   
   switch (orig.nDim) {
     case 1:
@@ -67,6 +74,9 @@ double zc_calc_metric_der_order1_ssim_float(float *data1, float *data2,
       break;
     case 3:
       result=temp1.SSIM_3d_windowed(temp2,ssimSize,ssimSize,ssimSize,ssimShift,ssimShift,ssimShift);
+      //cu_SSIM_3d_windowed(ssimSize,ssimSize,ssimSize,ssimShift,ssimShift,ssimShift);
+      cu_SSIM(temp1.data, temp2.data, temp1.size2, temp1.size1, temp1.size0, ssimSize, ssimShift);
+      exit(0);
       break;
     case 4:
       result=temp1.SSIM_4d_windowed(temp2,ssimSize,ssimSize,ssimSize,ssimSize,ssimShift,ssimShift,ssimShift,ssimShift);

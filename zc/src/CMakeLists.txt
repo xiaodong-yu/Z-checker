@@ -4,8 +4,11 @@ set (zc_sources
   DynamicFloatArray.c      ZC_CompareData_float.cpp   ZC_gnuplot.c             dictionary.c
   DynamicIntArray.c        ZC_DataProperty.c          ZC_Hashtable.c           ZC_latex.c               iniparser.c
   ZC_ByteToolkit.c         ZC_DataProperty_double.c   ZC_quicksort.c           zc.c
-  zc_derivativeMetrics.cpp ZC_ssim.c                  cuZC_ssim.cu
+  zc_derivativeMetrics.cpp ZC_ssim.c                  cuZC_entry.cu            cuZC_ssim.cu
 )
+set_source_files_properties(ZC_CompareData_double.cpp PROPERTIES LANGUAGE CUDA)
+set_source_files_properties(ZC_CompareData_float.cpp PROPERTIES LANGUAGE CUDA)
+set_source_files_properties(zc_derivativeMetrics.cpp PROPERTIES LANGUAGE CUDA)
 
 # TBA: ZC_R_math.c // R
 
