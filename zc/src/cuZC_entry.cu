@@ -67,7 +67,7 @@ int cu_SSIM(float *data1, float *data2, size_t r3, size_t r2, size_t r1, int ssi
     ssim<<<dimGrid, dimBlock>>>(ddata1, ddata2, dresults, r3, r2, r1, ssimSize, ssimShift);
     cudaMemcpy(results, dresults, isize, cudaMemcpyDeviceToHost); 
     double x=0;
-    printf("GPU timing: %f", timer_GPU.GetCounter());
+    printf("GPU timing: %f ms\n", timer_GPU.GetCounter());
     for (int i=0; i<blksize; i++){
         x += results[i];
         printf("results%i=%e\n",i,x);

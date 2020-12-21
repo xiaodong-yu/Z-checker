@@ -1,6 +1,7 @@
 #ifndef SSIM_HPP
 #define SSIM_HPP
 
+#include <time.h>
 #include "cuZC_entry.h"
 
 
@@ -113,6 +114,7 @@ double matrix<dT>::SSIM_3d_windowed(matrix &other, int windowSize0, int windowSi
   int nw=0; //Number of windows
   double ssimSum=0;
   int offsetInc0,offsetInc1,offsetInc2;
+  clock_t t;
 
   
   if(windowSize0>size0){cout<<"ERROR: windowSize0 = "<<windowSize0<<" > "<<size0<<" = matrix::size0"<<endl;assert(0);}
@@ -127,6 +129,7 @@ double matrix<dT>::SSIM_3d_windowed(matrix &other, int windowSize0, int windowSi
   offsetInc2=windowShift2;
   cout << "test:" <<size0<<":"<<size1<<":"<<size2<<endl;
   
+  t = clock();
   for(offset0=0; offset0+windowSize0<=size0; offset0+=offsetInc0){ //MOVING WINDOW
     double sum = 0; 
     for(offset1=0; offset1+windowSize1<=size1; offset1+=offsetInc1){ //MOVING WINDOW
@@ -143,6 +146,10 @@ double matrix<dT>::SSIM_3d_windowed(matrix &other, int windowSize0, int windowSi
     }
     //exit(0); 
   }
+  t = clock() - t;
+  double time_taken = ((double)t)/CLOCKS_PER_SEC;
+  printf("derivative ssim took %f seconds to execute \n", time_taken);
+
   printf("Sum%i=%e\n", offset0, ssimSum);
   exit(0); 
   //cout<<"# of windows = "<<nw<<endl;
